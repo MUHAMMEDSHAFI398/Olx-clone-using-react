@@ -1,9 +1,11 @@
 import React, { useState,useContext } from 'react';
 
 import Logo from '../../olx-logo.png';
-import { FirebaseContext } from '../../store/Context';
+import { FirebaseContext,LoadingContext } from '../../store/Context';
 import './Signup.css';
 import { useHistory } from 'react-router-dom';
+import Loader from "../Loader/Loader";
+
 
 export default function Signup() {
   const history = useHistory()
@@ -12,7 +14,10 @@ export default function Signup() {
   const [phone,setPhone]=useState('') ;
   const [password,setPassword]=useState('') ;
   const {firebase}=useContext(FirebaseContext)
+  const { load, setLoad } = useContext(LoadingContext);
+
   const handleSubmit=(e)=>{
+    setLoad(true);
     e.preventDefault();
   
  
@@ -23,7 +28,7 @@ export default function Signup() {
           username:username,
           phone:phone
         }).then(()=>{
-
+          setLoad(false);
           history.push("/login")
         })
 
@@ -33,6 +38,7 @@ export default function Signup() {
   }
   return (
     <div>
+       {load && <Loader />}
       <div className="signupParentDiv">
         <img width="200px" height="200px" src={Logo}></img>
         <form onSubmit={handleSubmit} >
@@ -54,6 +60,7 @@ export default function Signup() {
             className="input"
             type="email"
             value={email}
+    
             onChange={(e)=>setEmail(e.target.value)}
             id="fname"
             name="email"
@@ -66,6 +73,7 @@ export default function Signup() {
             className="input"
             type="number"
             value={phone}
+
             onChange={(e)=>setPhone(e.target.value)}
             id="lname"
             name="phone"
@@ -78,6 +86,7 @@ export default function Signup() {
             className="input"
             type="password"
             value={password}
+
             onChange={(e)=>setPassword(e.target.value)}
             id="lname"
             name="password"
@@ -85,9 +94,11 @@ export default function Signup() {
           />
           <br />
           <br />
-          <button>Signup</button>
+          <button  >Signup</button>
         </form>
-        <a>Login</a>
+        <a onClick={()=>{
+          history.push('/login')
+        }} >Login</a>
       </div>
     </div>
   );
